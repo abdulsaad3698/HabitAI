@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f7f2">
+    <title>Habit Grove — grow one day at a time</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='app.js') }}" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Habit Grove home">
+          <span class="brand-mark" aria-hidden="true">✳</span>
+          <span>habit<span class="brand-light">grove</span></span>
+        </a>
+        <div class="date-pill"><span class="live-dot"></span><span id="today-label"></span></div>
+      </header>
+
+      <main>
+        <section class="welcome">
+          <div>
+            <p class="eyebrow">YOUR LITTLE CORNER OF PROGRESS</p>
+            <h1>Small steps.<br><span>Strong roots.</span></h1>
+            <p class="welcome-copy">A better you is built one kind promise at a time.</p>
+          </div>
+          <div class="welcome-art" aria-hidden="true">
+            <span class="sun"></span><span class="leaf leaf-one"></span>
+            <span class="leaf leaf-two"></span><span class="leaf leaf-three"></span>
+            <span class="art-stem"></span><span class="art-pot"></span>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Habit progress">
+          <article class="stat-card">
+            <span class="stat-icon green-icon" aria-hidden="true">✓</span>
+            <div><p class="stat-label">TODAY'S PROGRESS</p><p class="stat-value" id="progress-value">0 <span>/ 0</span></p></div>
+            <div class="progress-track" role="progressbar" aria-label="Today's habit progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon peach-icon" aria-hidden="true">✦</span>
+            <div><p class="stat-label">TOP ACTIVE STREAK</p><p class="stat-value" id="streak-value">0 <span>days</span></p></div>
+            <p class="stat-note">Keep showing up for yourself</p>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon lilac-icon" aria-hidden="true">◷</span>
+            <div><p class="stat-label">LAST 7 DAYS</p><p class="stat-value" id="week-value">0 <span>check-ins</span></p></div>
+            <p class="stat-note">Every little bit adds up</p>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <div class="habits-panel panel">
+            <div class="section-heading">
+              <div><p class="eyebrow">MAKE TODAY COUNT</p><h2>Your habits</h2></div>
+              <span class="habit-count" id="habit-count">0 habits</span>
+            </div>
+            <form id="habit-form" class="add-habit-form">
+              <label class="sr-only" for="habit-name">New habit name</label>
+              <input id="habit-name" name="name" maxlength="80" placeholder="What small thing will you do today?" autocomplete="off" required>
+              <button class="button button-dark" type="submit"><span aria-hidden="true">＋</span> Add habit</button>
+            </form>
+            <p class="form-message" id="habit-message" role="status"></p>
+            <div class="habit-list" id="habit-list" aria-live="polite"></div>
+            <div class="empty-state" id="empty-state">
+              <span class="empty-flower" aria-hidden="true">✿</span>
+              <h3>A fresh page</h3>
+              <p>Add a habit above or let your AI coach help you get started.</p>
+            </div>
+          </div>
+
+          <aside class="coach-panel">
+            <div class="coach-top">
+              <span class="coach-sparkle" aria-hidden="true">✦</span>
+              <span class="coach-tag">YOUR AI COMPANION</span>
+              <h2>A little guidance<br>goes a long way.</h2>
+              <p>Get a plan that fits your goals, or a thoughtful check-in based on how you're doing.</p>
+            </div>
+            <form id="goal-form" class="goal-form">
+              <label for="goal-input">What would you like to work on?</label>
+              <div class="goal-input-row">
+                <input id="goal-input" maxlength="500" placeholder="e.g. feel more energized" required>
+                <button class="icon-button" type="submit" aria-label="Create AI habit plan">→</button>
+              </div>
+              <p class="coach-error" id="plan-error" role="alert"></p>
+            </form>
+            <div class="ai-result" id="plan-result" hidden>
+              <div class="result-heading"><span>YOUR PERSONALIZED PLAN</span><button class="text-button" id="dismiss-plan" type="button">Dismiss</button></div>
+              <div class="suggestion-list" id="suggestion-list"></div>
+              <button class="button button-green full-button" id="add-suggestions" type="button">Add selected habits</button>
+            </div>
+            <form class="image-form" id="image-form">
+              <label class="image-form-label" for="habit-image">Have a photo? Find the habit and why it matters.</label>
+              <input class="image-input" id="habit-image" name="image" type="file" accept="image/png,image/jpeg,image/gif,image/webp" required>
+              <label class="sr-only" for="image-context">Optional note about the photo</label>
+              <input class="image-context" id="image-context" name="context" maxlength="300" placeholder="Optional: add a little context">
+              <p class="image-help">PNG, JPEG, GIF, or WebP · up to 5 MB. The photo is sent to Gemini and not saved.</p>
+              <button class="button button-image full-button" id="analyze-image" type="submit">✦ Understand this habit</button>
+              <p class="coach-error" id="image-error" role="alert"></p>
+            </form>
+            <div class="image-preview-wrap" id="image-preview-wrap" hidden>
+              <img class="image-preview" id="image-preview" alt="Preview of the selected photo">
+            </div>
+            <div class="image-insight" id="image-insight" hidden aria-live="polite">
+              <p class="response-label">YOUR PHOTO, UNDERSTOOD</p>
+              <p class="insight-label">What I can see</p><p class="insight-copy" id="insight-summary"></p>
+              <p class="insight-label">A habit it might show</p><p class="insight-copy" id="insight-habit"></p>
+              <p class="insight-label">Why it matters</p><p class="insight-copy" id="insight-importance"></p>
+              <p class="insight-label">One tiny first step</p><p class="insight-copy" id="insight-step"></p>
+            </div>
+            <div class="coach-divider"><span>OR</span></div>
+            <button class="coach-checkin" id="coach-button" type="button">
+              <span class="checkin-icon" aria-hidden="true">✧</span>
+              <span><strong>Get my check-in</strong><small>A kind, data-informed nudge</small></span>
+              <span class="checkin-arrow" aria-hidden="true">↗</span>
+            </button>
+            <p class="coach-error" id="coach-error" role="alert"></p>
+            <div class="coach-response" id="coach-response" hidden>
+              <p class="response-label">A NOTE FOR YOU</p><p id="coach-text"></p>
+            </div>
+            <p class="privacy-note"><span aria-hidden="true">♡</span> Habits stay local. Goals, photos, and check-in data go to Gemini; photos aren't saved here.</p>
+          </aside>
+        </section>
+        <p class="page-footnote">Progress, not perfection. Come back tomorrow and keep growing.</p>
+      </main>
+    </div>
+  </body>
+</html>
